@@ -97,16 +97,22 @@ http {
     #  #   rewrite ^/feed/?$ http://feeds.feedburner.com/feedburner-feed-id last;
     #  # }
     #}
+    #
 
     include /app/conf/nginx.d/*.conf;
 
     location ~ .*\.php$ {
       try_files $uri =404;
+      error_page 404 = @drupal;
       limit_conn phplimit 5; # limit to 5 concurrent users to PHP per IP.
       include         fastcgi_params;
       fastcgi_param   HTTPS $my_https if_not_empty;
       fastcgi_pass    php_fpm;
       fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+
+    location @drupal {
+      rewrite ^(.*)$ /index.php?q=$1 last;
     }
   }
 }
