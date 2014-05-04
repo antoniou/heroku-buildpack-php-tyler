@@ -101,7 +101,7 @@ http {
 
     include /app/conf/nginx.d/*.conf;
 
-    location ~ .*\.php$ {
+    location / {
       try_files $uri =404;
       error_page 404 = @drupal;
       limit_conn phplimit 5; # limit to 5 concurrent users to PHP per IP.
